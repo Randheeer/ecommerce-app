@@ -25,10 +25,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build \
-            --build-arg REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING }} \
-            -t ${{ env.ACR_NAME }}.azureccr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker build --build-arg REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING }} -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+    docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
