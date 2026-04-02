@@ -25,19 +25,19 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t ${{ env.ARC_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
-          docker push ${{env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} 
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }} 
       
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v2
         with:
-          app_name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           images: ${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Set app settings
         run: |
           az webapp config appsettings set -g ecommerce-rg -n ${{ env.AZURE_WEBAPP_NAME }} \
-            -- settings MONGODB_URI=${{ secrets.MONGODB_URI }} \
+            --settings MONGODB_URI=${{ secrets.MONGODB_URI }} \
                           JWT_SECRET=${{ secrets.JWT_SECRET }} \
                           NODE_ENV=production
 
