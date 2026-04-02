@@ -9,25 +9,38 @@ import Profile from './pages/Profile';
 import Admin from './pages/Admin';
 import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { ReactPlugin } from '@microsoft/applicationinsights-react-js';
+import { AppInsightsContext } from '@microsoft/applicationinsights-react-js';
+
+const reactPlugin = new ReactPlugin();
+const appInsights = new ApplicationInsights({
+  config: {
+    connectionString: process.env.REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING,
+    extensions: [reactPlugin],
+    extensionConfig: {
+      [reactPlugin.identifier]: { history: window.history }
+    }
+  }
+});
+appInsights.loadAppInsights();
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Navbar />
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
+    <AppInsightsContext.Provider value={reactPlugin}>
+      <AuthProvider>
+        <Router>
+          <Navbar />
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              {/* ... other routes */}
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
+    </AppInsightsContext.Provider>	  
   );
 }
 
