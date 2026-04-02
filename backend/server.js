@@ -1,3 +1,11 @@
+const { useAzureMonitor } = require('@azure/monitor-opentelemetry');
+
+useAzureMonitor({
+  azureMonitor: {
+    connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+  },
+});
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');

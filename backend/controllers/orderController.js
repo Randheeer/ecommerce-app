@@ -15,10 +15,17 @@ exports.createOrder = async (req, res) => {
     }
     const order = new Order({ user: req.user.id, products: orderProducts, total });
     await order.save();
+    logger.info({ 
+      message: 'Order created', 
+      orderId: order._id, 
+      userId: req.user.id, 
+      total: order.total 
+    });	  
     res.json(order);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+    logger.error({ message: 'Error in functionName', error: err.message, stack: err.stack });	  
   }
 };
 

@@ -1,3 +1,4 @@
+const { logger } = require('@azure/monitor-opemtelemetry');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -13,6 +14,11 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
     await user.save();
+    logger.info({
+      message: 'User registered',
+      userId: user.id,
+      email: user.email
+    });
     const payload = { user: { id: user.id, isAdmin: user.isAdmin } };
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' }, (err, token) => {
       if (err) throw err;
